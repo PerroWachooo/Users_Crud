@@ -5,15 +5,34 @@
     <div v-if="loading" class="loading">Cargando usuarios...</div>
     <div v-if="error" class="error-message">{{ error }}</div>
     <ul v-if="users.length > 0">
-      <li v-for="user in users" :key="user.id">
-        <strong>{{ user.name }}</strong> - <span>{{ user.email }}</span>
-      </li>
+      <v-container>
+        <v-data-table :items="users">
+          <v-toolbar flat>
+            <v-toolbar-title>
+              <v-icon
+              color="medium-emphasis"
+              icon="mdi:account-group"
+              size="x-small"
+              start
+              ></v-icon>
+              Usuarios
+            </v-toolbar-title>
+
+            <v-btn text="Add User"></v-btn>
+
+            <v-spacer></v-spacer>
+          </v-toolbar>
+        </v-data-table>
+      </v-container>
     </ul>
     <div v-else-if="!loading && !error">
       No hay usuarios para mostrar.
     </div>
   </div>
+
 </template>
+
+
 
 <script>
 import axios from 'axios';
@@ -40,6 +59,8 @@ export default {
         // Si usaste '/users/json' en web.php, cámbialo aquí.
         const response = await axios.get('/users/user-data');
         this.users = response.data;
+        //Imprimimos la respuesta para depuración
+        console.log('Usuarios obtenidos:', this.users);
       } catch (err) {
         console.error('Error fetching users:', err);
         this.error = 'Error al cargar la lista de usuarios. Por favor, inténtalo de nuevo más tarde.';
