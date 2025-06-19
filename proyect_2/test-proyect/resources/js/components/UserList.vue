@@ -1,82 +1,101 @@
-
 <template>
   <div>
     <h1>Lista de Usuarios</h1>
     <div v-if="loading" class="loading">Cargando usuarios...</div>
     <div v-if="error" class="error-message">{{ error }}</div>
-    <ul v-if="users.length > 0">
-      <v-container>
-        <v-data-table :items="users">
+    
+    <v-container v-if="users.length > 0">
+      <v-data-table :headers="headers" :items="users">
+        <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>
-              <v-icon
-              color="medium-emphasis"
-              icon="mdi:account-group"
-              size="x-small"
-              start
-              ></v-icon>
+              <v-icon icon="mdi-account-group"></v-icon>
               Usuarios
             </v-toolbar-title>
 
-            <v-btn text="Add User"></v-btn>
-
+            <v-btn text="Add User" href="/users/create"></v-btn>
             <v-spacer></v-spacer>
           </v-toolbar>
-        </v-data-table>
-      </v-container>
-    </ul>
+        </template>
+
+        <template v-slot:item.actions="{ item }">
+          <v-icon
+            size="small"
+            class="me-2"
+            @click="editUser(item)"
+          >
+            mdi-pencil
+          </v-icon>
+          <v-icon
+            size="small"
+            @click="deleteUser(item)"
+          >
+            mdi-delete
+          </v-icon>
+        </template>
+      </v-data-table>
+    </v-container>
+
     <div v-else-if="!loading && !error">
       No hay usuarios para mostrar.
     </div>
   </div>
-
 </template>
 
+<script setup>
+import { ref, onMounted } from 'vue'; // Importar ref y onMounted de Vue 3
+import axios from 'axios'; // Importar axios
 
+// Estado reactivo
+const users = ref([]);
+const loading = ref(true);
+const error = ref(null);
+const headers = ref([
+  { title: 'ID', align: 'start', key: 'id' },
+  { title: 'Nombre', key: 'name' },
+  { title: 'Email', key: 'email' },
+  { title: 'Creado', key: 'created_at', sortable: false },
+  { title: 'Acciones', key: 'actions', sortable: false, align: 'end' },
+]);
 
-<script>
-import axios from 'axios';
-
-export default {
-  name: 'UserList',
-  data() {
-    return {
-      users: [],
-      loading: true,
-      error: null,
-    };
-  },
-  async mounted() {
-    await this.fetchUsers();
-  },
-  methods: {
-    async fetchUsers() {
-      this.loading = true;
-      this.error = null;
-      try {
-        // Asegúrate de que la URL '/users/list' coincida con la ruta definida en tu web.php
-        // para el método getUsersJson del controlador.
-        // Si usaste '/users/json' en web.php, cámbialo aquí.
-        const response = await axios.get('/users/user-data');
-        this.users = response.data;
-        //Imprimimos la respuesta para depuración
-        console.log('Usuarios obtenidos:', this.users);
-      } catch (err) {
-        console.error('Error fetching users:', err);
-        this.error = 'Error al cargar la lista de usuarios. Por favor, inténtalo de nuevo más tarde.';
-        if (err.response) {
-            // El servidor respondió con un código de estado fuera del rango 2xx
-            this.error += ` (Status: ${err.response.status})`;
-        } else if (err.request) {
-            // La solicitud se hizo pero no se recibió respuesta
-            this.error = 'No se pudo conectar con el servidor para obtener los usuarios.';
-        }
-      } finally {
-        this.loading = false;
-      }
-    },
-  },
+// Función para obtener usuarios
+const fetchUsers = async () => {
+  loading.value = true;
+  error.value = null;
+  try {
+    const response = await axios.get('/users/user-data');
+    users.value = response.data;
+    console.log('Usuarios obtenidos:', users.value);
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    error.value = 'Error al cargar la lista de usuarios. Por favor, inténtalo de nuevo más tarde.';
+    if (err.response) {
+      error.value += ` (Status: ${err.response.status})`;
+    } else if (err.request) {
+      error.value = 'No se pudo conectar con el servidor para obtener los usuarios.';
+    }
+  } finally {
+    loading.value = false;
+  }
 };
+
+// Función para eliminar un usuario
+const deleteUser = async (user) => {
+  if (!confirm(`¿Estás seguro que quieres eliminar a ${user.name}?`)) return;
+  try {
+    const response = await axios.delete(`/users/${user.id}`);
+    console.log('Usuario eliminado:', response.data);
+    fetchUsers(); // Refresca la lista de usuarios después de eliminar
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    error.value = 'Error al eliminar el usuario. Por favor, inténtalo de nuevo más tarde.';
+  }
+};
+
+// Cargar los usuarios cuando el componente se monte
+onMounted(() => {
+  fetchUsers();
+});
 </script>
 
 <style scoped>

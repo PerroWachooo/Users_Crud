@@ -22,7 +22,33 @@
     <body class="antialiased">
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
             <!-- Aquí va el contenedor de Vue -->
-            <div id="app"></div>
+            <div id="app">
+                <div class="max-w-6xl mx-auto sm:px-6 lg:px-
+8">
+                <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
+                    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Bienvenido a Crud Usuarios</h1>
+                </div>
+
+                <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
+                    <div class="p-6">
+                        <p class="text-gray-600 dark:text-gray-400">Esta es una aplicación de prueba que utiliza Laravel y Vue.js.</p>
+                    </div>
+                    <div class="p-6">
+                        <a href ={{ route('users.index') }} class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded ml-4">
+                            Ver Usuarios
+                        </a>
+                        <a href = {{ route('users.create') }} class="bg-green-500 hover:bg-green-700 text-black font-bold py-2 px-4 rounded ml-4">
+                            Crear Usuario
+                        </a>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+            <!-- Contenido de la página -->
+            
 
             <!-- Script de Vue -->
             <script src="{{ mix('/js/app.js') }}"></script>

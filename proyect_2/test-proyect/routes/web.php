@@ -13,6 +13,8 @@ use App\Http\Controllers\UserController;
 |
 */
 
+//Route::get(uri: '/', [UserController::class,'index'])->name('home');
+
 Route::get('/', function () {
     return view('welcome');
 });

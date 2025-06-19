@@ -29,4 +29,14 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+    /**
+     * El conjunto de comandos para la aplicación.
+     *
+     * @var array
+     */
+    protected $commands = [
+        Commands\SaludarUsuario::class,
+    ];
+
 }
