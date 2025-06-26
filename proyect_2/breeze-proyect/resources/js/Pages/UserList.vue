@@ -63,7 +63,7 @@ const fetchUsers = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await axios.get('/users/user-data');
+    const response = await axios.get('/api/users/user-data');
     users.value = response.data;
     console.log('Usuarios obtenidos:', users.value);
   } catch (err) {

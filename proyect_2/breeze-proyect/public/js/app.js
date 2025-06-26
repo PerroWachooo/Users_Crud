@@ -23257,7 +23257,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               error.value = null;
               _context.p = 1;
               _context.n = 2;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/users/user-data');
+              return axios__WEBPACK_IMPORTED_MODULE_1___default().get('/api/users/user-data');
             case 2:
               response = _context.v;
               users.value = response.data;
